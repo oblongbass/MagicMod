@@ -1,0 +1,2 @@
+# MagicMod
+A simple mod.
