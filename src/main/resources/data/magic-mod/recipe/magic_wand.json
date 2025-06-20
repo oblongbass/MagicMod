@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "magic-mod:magic_star",
+    "*": "minecraft:stick"
+  },
+  "pattern": [
+    "#*#",
+    "#*#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "magic-mod:magic_wand_levitation"
+  }
+}

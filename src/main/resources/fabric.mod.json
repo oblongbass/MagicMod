@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "magic-mod",
+	"version": "${version}",
+	"name": "magic mod",
+	"description": "MagicMod",
+	"authors": [
+		"QT"
+	],
+	"contact": {
+		"homepage": "No",
+		"sources": "https://github.com/oblongbass/MagicMod"
+	},
+	"license": "MIT",
+	"icon": "assets/magic-mod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.magic.MagicMod"
+		],
+		"client": [
+			"com.magic.MagicModClient"
+		],
+		"fabric-datagen": [
+			"com.magic.MagicModDataGenerator"
+		]
+	},
+	"mixins": [
+		"magic-mod.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.5",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

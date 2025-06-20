@@ -1,0 +1,6 @@
+{
+  "item.magic-mod.magic_star": "魔法之星",
+  "item.magic-mod.magic_wand_levitation": "嘛哩嘛哩哄-魔法棒 悬浮",
+  "itemGroup.magic-mod.group": "魔法模组",
+  "item.magicmod.magic_wand_levitation.tooltip": "§r§a右击生物给§6生物施加漂浮效果§f-§l类型[1]"
+}
