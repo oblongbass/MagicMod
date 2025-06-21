@@ -6,12 +6,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class HudRenderer {
-    // 使用正确的 Identifier 创建方法
-    private static final Identifier MODE_ICONS = Identifier.of("magic-mod", "textures/gui/mode_icons.png");
-
     public static void register() {
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             MinecraftClient client = MinecraftClient.getInstance();

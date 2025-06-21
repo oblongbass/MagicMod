@@ -1,18 +1,26 @@
 package com.magic;
 
+import com.magic.Entity.ModEntities;
 import com.magic.item.ItemsRegistry;
-import com.magic.item.ModItemGroups;
-import com.magic.item.MagicStarItem;
 import com.magic.item.MagicWandItem;
+import com.magic.item.ModItemGroups;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.condition.EntityPropertiesLootCondition;
+import net.minecraft.loot.condition.RandomChanceLootCondition;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.EntityTypePredicate;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.minecraft.entity.EntityType;
 
 public class MagicMod implements ModInitializer {
 	public static final String MOD_ID = "magic-mod";
@@ -20,31 +28,11 @@ public class MagicMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// 初始化物品注册
 		ItemsRegistry.initialize();
-
-		// 注册物品组
+		ModEntities.initialize();
 		ModItemGroups.register();
+		ServerTickEvents.END_SERVER_TICK.register(server -> MagicWandItem.tickParticleEffects());
 
-		// 添加测试命令 - 修正括号问题
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(CommandManager.literal("givemagic")
-					.executes(context -> {
-						ServerCommandSource source = context.getSource();
-						if (source.getPlayer() != null) {
-							ServerPlayerEntity player = source.getPlayer();
-							player.giveItemStack(new ItemStack(MagicStarItem.MAGIC_STAR));
-							player.giveItemStack(new ItemStack(MagicWandItem.MAGIC_WAND));
-							source.sendFeedback(() -> Text.literal("Gave magic items!"), false);
-						}
-						return 1;
-					})); // 修正这里：添加了缺失的括号
-		});
-
-		LOGGER.info("Magic Mod initialized successfully!");
-
-		// 添加调试信息
-		LOGGER.info("Magic Star registered: {}", MagicStarItem.MAGIC_STAR);
-		LOGGER.info("Magic Wand registered: {}", MagicWandItem.MAGIC_WAND);
+		LOGGER.info("Magic Mod 初始化成功!");
 	}
 }

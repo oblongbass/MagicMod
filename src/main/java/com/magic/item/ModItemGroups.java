@@ -11,11 +11,11 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import static com.magic.item.MagicStarItem.MAGIC_STAR;
-import static com.magic.item.MagicWandItem.MAGIC_WAND;
+// 修正1: 导入正确的静态字段
+import static com.magic.item.ItemsRegistry.MAGIC_STAR;
+import static com.magic.item.ItemsRegistry.MAGIC_WAND_LEVITATION;
 
 public class ModItemGroups {
-    // 使用 RegistryKey 而不是 Identifier
     public static final RegistryKey<ItemGroup> MAGIC_GROUP_KEY = RegistryKey.of(
             RegistryKeys.ITEM_GROUP,
             Identifier.of(MagicMod.MOD_ID, "magic_group")
@@ -26,12 +26,12 @@ public class ModItemGroups {
             .icon(() -> new ItemStack(MAGIC_STAR))
             .entries((context, entries) -> {
                 entries.add(MAGIC_STAR);
-                entries.add(MAGIC_WAND);
+                // 修正2: 使用正确的物品字段
+                entries.add(MAGIC_WAND_LEVITATION);
             })
             .build();
 
     public static void register() {
-        // 使用正确的注册方法
         Registry.register(
                 Registries.ITEM_GROUP,
                 MAGIC_GROUP_KEY,

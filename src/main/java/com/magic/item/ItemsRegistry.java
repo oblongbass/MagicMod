@@ -11,20 +11,32 @@ import java.util.function.Function;
 import static com.magic.MagicMod.MOD_ID;
 
 public final class ItemsRegistry {
+    public static Item MAGIC_STAR;
+    public static Item MAGIC_WAND_LEVITATION;
+
     private ItemsRegistry() {}
 
     public static Item register(String path, Function<Item.Settings, Item> factory, Item.Settings settings) {
         final Identifier itemId = Identifier.of(MOD_ID, path);
         final RegistryKey<Item> registryKey = RegistryKey.of(RegistryKeys.ITEM, itemId);
 
-        // 创建物品实例时设置 registryKey
         Item item = factory.apply(settings.registryKey(registryKey));
-
-        // 注册物品
         return Registry.register(Registries.ITEM, registryKey, item);
     }
 
     public static void initialize() {
-        // 空方法，用于触发静态初始化
+        MAGIC_STAR = register(
+                "magic_star",
+                MagicStarItem::new,
+                new Item.Settings()
+        );
+
+        MAGIC_WAND_LEVITATION = register(
+                "magic_wand_levitation",
+                MagicWandItem::new,
+                new Item.Settings().maxCount(1)
+        );
+
+        System.out.println("物品注册完成");
     }
 }
