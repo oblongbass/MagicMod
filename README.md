@@ -1,45 +1,32 @@
-# MagicMod
+# 🪄 Magic Mod for Minecraft 1.21+
 
-*中文*
------
->该模组刚开始构建
+> ✨ 添加魔法物品、实体和咒语施放机制  
+> ✨ Adds magical items, entities and spellcasting mechanics
 
-**用途**
+## ✅ 环境要求 | Environment
+**必须同时安装客户端和服务端 | Client & Server Required**
 
- 模组主要用于生存娱乐
+## ✨ 核心特性 | Key Features
+- **悬浮魔法棒** | Levitation Wand  
+  右键生物施放悬浮咒语 | Cast levitation spells on mobs
+- **魔法僵尸** | Magic Zombies  
+  掉落稀有魔法之星 | Drop rare Magic Stars
+- **粒子特效** | Visual Effects  
+  完整施法动画序列 | Full spellcasting particle sequences
+- **HUD状态显示** | Equipment Status  
+  装备魔杖时实时提示 | Real-time wand status display
 
- 魔法棒可用2行合成配方合成：上下一致 | 魔法之心+木棍+魔法之心
- 
- 魔法棒第一个形式：悬浮 右击实体可让实体悬浮
- 
->第二形式后续版本添加
+## 🧩 技术细节 | Technical
+- 版本 | Version: Minecraft 1.21.5
+- 依赖 | Requires: Fabric API
 
-**2.前置**
+## 🎮 入门指南 | Getting Started
+1. 获取魔法棒（合成/创造模式）| Obtain magic wand
+2. 右键点击生物施法 | Right-click mobs to cast spells
+3. 击败魔法僵尸收集星星 | Defeat magic zombies for stars
 
- >本模组需要搭配MinecraftFabricAPI使用
+## 作者 | author
+**oblongbass(QT)**
 
-**3.加载器**
-
- >本模组为Fabric模组
-
-*English*
-----
-> the mod is just starting to be built
-
-**Use**
-
-Mods are mainly used for survival entertainment
-
-The Magic Wand can be crafted with a 2-line crafting recipe: the top and bottom are the same| Heart of Magic Sticks Heart of Magic
-
-The first form of the magic wand: levitation Right-clicking on an entity causes it to levitate
-
-> added in subsequent versions of the second form
-
-**2.Front**
-
-> this mod needs to be used with the MinecraftFabric API
-
-**3.Loader**
-
-> This module is a Fabric module
+## 目前未更新完成的 | It is not currently updated
+- 僵尸无法自然刷新，你可以用过指令生成 | Zombies do not spawn naturally, you can spawn them with commands
