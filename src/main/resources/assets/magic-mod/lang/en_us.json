@@ -1,6 +1,10 @@
 {
   "item.magic-mod.magic_star": "Magic Star",
   "item.magic-mod.magic_wand": "Magic Wand Levitation",
+  "item.magic-mod.guide_book": "Magic Mod Guide Book",
+  "item.magic-mod.grow_potion": "Grow Potion",
+  "item.magic-mod.splash_grow_potion": "Splash Grow Potion",
+  "effect.magic-mod.grow": "Grow",
   "itemGroup.magic-mod.group": "Magic Mod",
   "item.magicmod.magic_wand_levitation.tooltip": "Right-click on a creature to apply levitation effect"
 }

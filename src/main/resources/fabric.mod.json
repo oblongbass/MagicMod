@@ -3,9 +3,9 @@
 	"id": "magic-mod",
 	"version": "${version}",
 	"name": "magic mod",
-	"description": "MagicMod",
+	"description": "增加引导",
 	"authors": [
-		"QT"
+		"oblongbass(QT)"
 	],
 	"contact": {
 		"homepage": "No",

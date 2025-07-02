@@ -1,6 +1,10 @@
 {
   "item.magic-mod.magic_star": "魔法之星",
   "item.magic-mod.magic_wand_levitation": "嘛哩嘛哩哄-魔法棒 悬浮",
+  "item.magic-mod.guide_book": "魔法模组指引书",
+  "item.magic-mod.grow_potion": "变大药水",
+  "item.magic-mod.splash_grow_potion": "喷溅变大药水",
+  "effect.magic-mod.grow": "变大",
   "itemGroup.magic-mod.group": "魔法模组",
   "item.magicmod.magic_wand_levitation.tooltip": "§r§a右击生物给§6生物施加漂浮效果§f-§l类型[1]"
 }
