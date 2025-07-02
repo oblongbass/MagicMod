@@ -1,7 +1,7 @@
-# 🪄 Magic Mod for Minecraft 1.21+
+# 🪄 Magic Mod for Minecraft 1.21.5
 
-> ✨ 添加魔法物品、实体和咒语施放机制  
-> ✨ Adds magical items, entities and spellcasting mechanics
+> ✨ 添加指引书
+> ✨ Add a guideline
 
 ## ✅ 环境要求 | Environment
 **必须同时安装客户端和服务端 | Client & Server Required**
@@ -30,3 +30,4 @@
 
 ## 目前未更新完成的 | It is not currently updated
 - 僵尸无法自然刷新，你可以用过指令生成 | Zombies do not spawn naturally, you can spawn them with commands
+- 药水尚未实现 | The potion has not yet been implemented
