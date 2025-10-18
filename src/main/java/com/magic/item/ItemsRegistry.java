@@ -1,8 +1,6 @@
 package com.magic.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.SplashPotionItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -17,8 +15,7 @@ public final class ItemsRegistry {
     public static Item MAGIC_STAR;
     public static Item MAGIC_WAND_LEVITATION;
     public static Item GUIDE_BOOK;
-    public static Item GROW_POTION;
-    public static Item SPLASH_GROW_POTION;
+    public static Item CRYSTAL_BALL; // 新增：魔法水晶球
 
     private ItemsRegistry() {}
 
@@ -31,8 +28,8 @@ public final class ItemsRegistry {
         MAGIC_STAR = register("magic_star", MagicStarItem::new, new Item.Settings());
         MAGIC_WAND_LEVITATION = register("magic_wand_levitation", MagicWandItem::new, new Item.Settings().maxCount(1));
         GUIDE_BOOK = register("guide_book", GuideBookItem::new, new Item.Settings().maxCount(1));
-        GROW_POTION = register("grow_potion", PotionItem::new, new Item.Settings().maxCount(16));
-        SPLASH_GROW_POTION = register("splash_grow_potion", SplashPotionItem::new, new Item.Settings().maxCount(16));
+        CRYSTAL_BALL = register("crystal_ball", CrystalBallItem::new, new Item.Settings().maxCount(1)); // 注册水晶球
+
         System.out.println("物品注册完成");
     }
 }
