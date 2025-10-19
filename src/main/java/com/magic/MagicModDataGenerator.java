@@ -5,7 +5,6 @@ import com.magic.item.ItemsRegistry;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -26,6 +25,9 @@ public class MagicModDataGenerator implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		pack.addProvider(MagicEntityLootTableProvider::new);
+
+		// 注释掉附魔生成器，使用手动JSON文件
+		// pack.addProvider(EnchantmentGenerator::new);
 	}
 
 	private static class MagicEntityLootTableProvider extends SimpleFabricLootTableProvider {
