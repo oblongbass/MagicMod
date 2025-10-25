@@ -3,7 +3,6 @@
 	"package": "com.magic.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"LivingEntityScaleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
