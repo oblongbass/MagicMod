@@ -1,62 +1,87 @@
 package com.magic;
 
 import com.magic.Entity.ModEntities;
-import com.magic.effect.GrowEffect;
-import com.magic.event.PlayerJoinHandler;
-import com.magic.event.EntityRemovalHandler;
+import com.magic.enchantment.ModEnchantmentEffects;
+import com.magic.event.*;
 import com.magic.item.ItemsRegistry;
 import com.magic.item.MagicWandItem;
+import com.magic.item.CrystalBallItem;
 import com.magic.item.ModItemGroups;
+import com.magic.block.ModBlocks;
+import com.magic.command.MagicCommands;
+import com.magic.data.SimplePlayerDataManager;
+import com.magic.networking.MagicNetworking;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.EntityPropertiesLootCondition;
-import net.minecraft.loot.condition.RandomChanceLootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.EntityTypePredicate;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.potion.Potion;
 
 public class MagicMod implements ModInitializer {
 	public static final String MOD_ID = "magic-mod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	
-	// 注册状态效果和药水
-	public static final StatusEffect GROW_EFFECT = Registry.register(Registries.STATUS_EFFECT, Identifier.of(MOD_ID, "grow"), new GrowEffect());
-	public static final Potion GROW_POTION = Registry.register(
-			Registries.POTION,
-			Identifier.of(MOD_ID, "grow"),
-			new Potion("grow", new StatusEffectInstance(Registries.STATUS_EFFECT.getEntry(GROW_EFFECT), 600, 0, false, false))
-	);
 
 	@Override
 	public void onInitialize() {
 		ItemsRegistry.initialize();
+		ModBlocks.initialize();
 		ModEntities.initialize();
 		ModItemGroups.register();
+
+		// 注册自定义附魔效果类型
+		ModEnchantmentEffects.register();
+
+		// 注册魔法杖粒子效果更新
 		ServerTickEvents.END_SERVER_TICK.register(server -> MagicWandItem.tickParticleEffects());
-		
+
+		// 注册水晶球粒子效果更新
+		ServerTickEvents.END_SERVER_TICK.register(server -> CrystalBallItem.tickParticleEffects());
+
 		// 注册玩家加入事件处理器
 		PlayerJoinHandler.register();
-		
+
 		// 注册实体移除事件处理器
 		EntityRemovalHandler.register();
 
-		// 注册GrowEffect和GrowPotion
-		// Registry.register(Registries.STATUS_EFFECT, Identifier.of(MOD_ID, "grow"), GROW_EFFECT);
-		// Registry.register(Registries.POTION, Identifier.of(MOD_ID, "grow"), GROW_POTION);
+		// 注册魔法僵尸生成系统
+		MagicZombieSpawn.register();
+
+		// 注册附魔书激活处理器
+		BookActivationHandler.register();
+
+		// 注册物品投掷监听器
+		ItemThrowListener.register();
+
+		// 注册命令
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			MagicCommands.register(dispatcher);
+		});
+
+		// 注册实体交互处理器（用于魔法阵物品实体右键收回）
+		EntityInteractionHandler.register();
+
+		// 注册玩家右键检测处理器（通过射线检测寻找魔法阵物品实体）
+		PlayerRightClickHandler.register();
+
+		// 注册花岗岩右键检测处理器（检测右键平滑花岗岩并收回魔法阵）
+		GraniteClickHandler.register();
+
+		// 注册花岗岩保护处理器（防止玩家挖掘魔法阵花岗岩）
+		GraniteProtectionHandler.register();
+
+		// 注册网络数据包
+		MagicNetworking.initialize();
+
+		// 注册服务器停止事件，保存魔法阵数据
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			try {
+				SimplePlayerDataManager.saveToFile();
+				LOGGER.info("[Magic] 服务器停止，已保存魔法阵数据");
+			} catch (Exception e) {
+				LOGGER.error("[Magic] 保存魔法阵数据失败", e);
+			}
+		});
 
 		LOGGER.info("Magic Mod 初始化成功!");
 	}
