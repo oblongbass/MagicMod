@@ -3,9 +3,9 @@
 	"id": "magic-mod",
 	"version": "${version}",
 	"name": "magic mod",
-	"description": "增加引导",
+	"description": "Simple Magic",
 	"authors": [
-		"oblongbass(QT)"
+		"oblongbass(QT) playgameswith"
 	],
 	"contact": {
 		"homepage": "No",
