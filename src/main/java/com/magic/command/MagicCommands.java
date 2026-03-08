@@ -16,6 +16,9 @@ public class MagicCommands {
         dispatcher.register(CommandManager.literal("magic_teleport_to_circle")
             .executes(MagicCommands::teleportToMagicCircle)
         );
+        
+        // 注册测试魔法僵尸命令
+        TestMagicZombieCommand.register(dispatcher, null, null);
     }
     
     private static int teleportToMagicCircle(CommandContext<ServerCommandSource> context) {

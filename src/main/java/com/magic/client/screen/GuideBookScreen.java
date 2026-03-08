@@ -197,27 +197,42 @@ public class GuideBookScreen extends Screen {
             "6. §n合成提示§r：紫水晶碎片可通过交易或采矿获得"
         ));
         
-        // 第9页：传送魔法阵（仅文本）
+        // 第9页：传送魔法阵合成（合成网格显示）
+        ItemStack[] magicCircleGrid = new ItemStack[9];
+        // 第一行
+        magicCircleGrid[0] = new ItemStack(Items.REDSTONE);
+        magicCircleGrid[1] = new ItemStack(Items.ENDER_PEARL);
+        magicCircleGrid[2] = new ItemStack(Items.REDSTONE);
+        // 第二行
+        magicCircleGrid[3] = new ItemStack(Items.REDSTONE);
+        magicCircleGrid[4] = new ItemStack(ItemsRegistry.MAGIC_STAR);
+        magicCircleGrid[5] = new ItemStack(Items.REDSTONE);
+        // 第三行
+        magicCircleGrid[6] = new ItemStack(Items.REDSTONE);
+        magicCircleGrid[7] = new ItemStack(Items.ENDER_PEARL);
+        magicCircleGrid[8] = new ItemStack(Items.REDSTONE);
+
         pages.add(new Page(
-            "§l传送魔法阵§r\n\n" +
+            "§l传送魔法阵合成配方§r\n\n" +
             "§n功能：§r\n" +
             "- 放置魔法阵作为传送锚点\n" +
             "- 按下F7键返回魔法阵中心\n" +
             "- 每个玩家只能拥有一个魔法阵\n\n" +
+            "§n材料：§r\n" +
+            "- 4红石\n" +
+            "- 1魔法之星\n" +
+            "- 4末影珍珠\n\n" +
+            "§n合成布局：§r\n" +
+            "🔴 🟣 🔴\n" +
+            "🔴 ★  🔴\n" +
+            "🔴 🟣 🔴\n\n" +
+            "🔴=红石 🟣=末影珍珠 ★=魔法之星\n\n" +
+            "§6提示：§r右侧查看合成网格\n\n" +
             "§n使用方法：§r\n" +
             "1. §n放置§r：手持传送法阵卷轴右键地面\n" +
             "2. §n传送§r：按下F7键（无论身在何处）\n" +
-            "3. §n收回§r：右键花岗岩上的魔法阵物品\n\n" +
-            "§n注意事项：§r\n" +
-            "- 魔法阵中心为平滑花岗岩方块\n" +
-            "- 花岗岩上显示魔法阵物品（不可捡起）\n" +
-            "- 只有所有者可以收回魔法阵\n" +
-            "- 收回后返还一个传送法阵卷轴\n" +
-            "- 魔法阵放置时会消耗一个卷轴\n\n" +
-            "§n提示：§r\n" +
-            "- 可在基地、矿洞、探索点设置魔法阵\n" +
-            "- 用于快速返回重要位置\n" +
-            "- 避免在危险区域放置魔法阵"
+            "3. §n收回§r：右键花岗岩上的魔法阵物品",
+            magicCircleGrid
         ));
         
         // 第10页：联系信息（仅文本）
@@ -625,6 +640,8 @@ public class GuideBookScreen extends Screen {
                 return new ItemStack(ItemsRegistry.MAGIC_WAND_LEVITATION);
             case 4: // 第5页：伤害魔法杖配方
                 return new ItemStack(ItemsRegistry.MAGIC_WAND_DAMAGE);
+            case 8: // 第9页：传送魔法阵配方
+                return new ItemStack(ItemsRegistry.MAGIC_CIRCLE);
             default:
                 return ItemStack.EMPTY;
         }

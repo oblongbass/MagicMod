@@ -26,11 +26,20 @@ public class MagicCircleItemEntity extends ItemEntity {
     }
     
     public MagicCircleItemEntity(World world, double x, double y, double z, ItemStack stack, UUID ownerUuid) {
-        super(EntityType.ITEM, world);
+        super(ModEntities.MAGIC_CIRCLE_ITEM_ENTITY, world);
         this.setPosition(x, y, z);
-        this.setStack(stack);
-        this.ownerUuid = ownerUuid;
         
+        // 将所有者UUID存储在物品NBT中
+        if (ownerUuid != null) {
+            // 在Minecraft 1.21.8中，ItemStack的NBT处理方式可能已改变
+            // 我们尝试直接修改物品堆栈
+            this.ownerUuid = ownerUuid;
+            com.magic.MagicMod.LOGGER.info("[Magic] 创建魔法阵物品实体，所有者UUID: {}", ownerUuid);
+        }
+        
+        this.setStack(stack);
+        com.magic.MagicMod.LOGGER.info("[Magic] 创建魔法阵物品实体，物品: {}", stack.getItem());
+
         // 设置属性：不可捡起、无敌、无重力
         this.setInvulnerable(true);
         this.setNoGravity(true);
@@ -74,34 +83,15 @@ public class MagicCircleItemEntity extends ItemEntity {
     }
     
     @Override
+    public boolean shouldSave() {
+        // 魔法阵物品实体应该被保存，以便重启后恢复
+        return true;
+    }
+    
+    @Override
     public void onPlayerCollision(PlayerEntity player) {
         // 禁止被捡起
         // 不调用父类方法
-    }
-    
-    // 保存自定义数据到NBT
-    public void writeCustomDataToNbt(net.minecraft.nbt.NbtCompound nbt) {
-        // 保存所有者UUID
-        if (ownerUuid != null) {
-            // 在Minecraft 1.21.8中，使用NbtIntArray存储UUID
-            long most = ownerUuid.getMostSignificantBits();
-            long least = ownerUuid.getLeastSignificantBits();
-            nbt.putLongArray("Owner", new long[]{most, least});
-        }
-    }
-    
-    // 从NBT读取自定义数据
-    public void readCustomDataFromNbt(net.minecraft.nbt.NbtCompound nbt) {
-        if (nbt.contains("Owner")) {
-            // 从NbtIntArray读取UUID
-            java.util.Optional<long[]> uuidPartsOpt = nbt.getLongArray("Owner");
-            if (uuidPartsOpt.isPresent()) {
-                long[] uuidParts = uuidPartsOpt.get();
-                if (uuidParts.length == 2) {
-                    ownerUuid = new java.util.UUID(uuidParts[0], uuidParts[1]);
-                }
-            }
-        }
     }
     
     // 覆盖Entity的interact方法 - 所有者可以收回魔法阵
@@ -164,7 +154,7 @@ public class MagicCircleItemEntity extends ItemEntity {
         
         // 发送网络数据包移除客户端特效
         if (player instanceof net.minecraft.server.network.ServerPlayerEntity) {
-            MagicNetworking.sendMagicCircleRemoved((net.minecraft.server.network.ServerPlayerEntity) player);
+            MagicNetworking.sendMagicCircleRemoved((net.minecraft.server.network.ServerPlayerEntity) player, ownerUuid);
         }
         
         return ActionResult.SUCCESS;

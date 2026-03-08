@@ -152,7 +152,7 @@ public class MagicCircleItem extends Item {
         double centerZ = circleCenter.getZ() + 0.5;
         
         // 发送网络数据包激活客户端特效
-        MagicNetworking.sendMagicCirclePlaced(player, new Vec3d(centerX, centerY, centerZ));
+        MagicNetworking.sendMagicCirclePlaced(player, new Vec3d(centerX, centerY, centerZ), player.getUuid());
         
         // 简单数据管理器不需要保存
         

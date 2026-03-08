@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import com.magic.networking.MagicNetworking;
 import com.magic.networking.SimpleMagicPayload;
 import com.magic.MagicMod;
+import java.util.UUID;
 
 @Environment(EnvType.CLIENT)
 public class MagicCircleClientNetworking {
@@ -35,12 +36,17 @@ public class MagicCircleClientNetworking {
                         // 在客户端线程处理
                         context.client().execute(() -> {
                             if (context.client().player != null) {
+                                // 使用数据包中的所有者UUID（如果存在），否则使用当前玩家UUID（向后兼容）
+                                UUID ownerUuid = payload.ownerUuid() != null ? payload.ownerUuid() : context.client().player.getUuid();
+                        // 调试日志：确认客户端收到数据包
+                                com.magic.MagicMod.LOGGER.info("[Magic] 客户端收到魔法阵放置数据包，位置: {}, 所有者: {}", 
+                                    payload.position(), ownerUuid);
                                 // 激活魔法阵特效
                                 MagicCircleRenderer.activateCircleForPlayer(
-                                    context.client().player.getUuid(), 
+                                    ownerUuid, 
                                     payload.position()
                                 );
-                                // 调试信息已移除
+                                com.magic.MagicMod.LOGGER.info("[Magic] 已调用activateCircleForPlayer");
                             }
                         });
                     }
@@ -49,9 +55,11 @@ public class MagicCircleClientNetworking {
                         // 在客户端线程处理
                         context.client().execute(() -> {
                             if (context.client().player != null) {
+                                // 使用数据包中的所有者UUID（如果存在），否则使用当前玩家UUID（向后兼容）
+                                UUID ownerUuid = payload.ownerUuid() != null ? payload.ownerUuid() : context.client().player.getUuid();
                                 // 移除魔法阵特效
                                 MagicCircleRenderer.deactivateCircleForPlayer(
-                                    context.client().player.getUuid()
+                                    ownerUuid
                                 );
                                 // 调试信息已移除
                             }

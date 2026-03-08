@@ -1,9 +1,9 @@
 package com.magic.event;
 
 import com.magic.Entity.ModEntities;
+import com.magic.Entity.MagicZombieEntity;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
@@ -63,12 +63,66 @@ public class MagicZombieSpawn {
     }
 
     private static boolean canSpawnAtLocation(ServerWorld world, BlockPos pos) {
-        // 暂时禁用魔法僵尸生成
-        return false;
+        // 检查位置是否有效
+        if (!world.isChunkLoaded(pos)) {
+            return false;
+        }
+
+        // 检查亮度条件（只在黑暗处生成）
+        int lightLevel = world.getLightLevel(pos);
+        if (lightLevel >= 5) {
+            return false;
+        }
+
+        // 检查方块是否可站立
+        if (!world.getBlockState(pos.down()).isSolidBlock(world, pos.down())) {
+            return false;
+        }
+
+        // 检查生成位置是否安全（没有液体、不是危险方块）
+        if (world.getBlockState(pos).isSolidBlock(world, pos) || 
+            world.getBlockState(pos).isLiquid()) {
+            return false;
+        }
+
+        // 检查附近是否有玩家（避免在玩家脸上生成）
+        for (net.minecraft.server.network.ServerPlayerEntity player : world.getPlayers()) {
+            if (player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) < 16.0 * 16.0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void spawnMagicZombie(ServerWorld world, BlockPos pos) {
-        // 暂时禁用魔法僵尸生成
+        // 创建魔法僵尸实体
+        MagicZombieEntity magicZombie = ModEntities.MAGIC_ZOMBIE.create(world, SpawnReason.NATURAL);
+        
+        if (magicZombie != null) {
+            // 设置位置
+            magicZombie.refreshPositionAndAngles(
+                pos.getX() + 0.5, 
+                pos.getY(), 
+                pos.getZ() + 0.5,
+                world.random.nextFloat() * 360.0f,
+                0.0f
+            );
+
+            // 设置生成原因
+            magicZombie.initialize(world, world.getLocalDifficulty(pos), 
+                net.minecraft.entity.SpawnReason.NATURAL, null);
+
+            // 生成粒子效果
+            spawnSpawnParticles(world, pos);
+
+            // 添加到世界
+            world.spawnEntity(magicZombie);
+
+            // 播放音效
+            world.playSound(null, pos, net.minecraft.sound.SoundEvents.ENTITY_ZOMBIE_AMBIENT, 
+                net.minecraft.sound.SoundCategory.HOSTILE, 1.0f, 0.8f + world.random.nextFloat() * 0.4f);
+        }
     }
 
     private static void spawnSpawnParticles(ServerWorld world, BlockPos pos) {

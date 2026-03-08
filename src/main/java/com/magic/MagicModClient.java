@@ -6,6 +6,7 @@ import com.magic.client.MagicCircleRenderHandler;
 import com.magic.client.MagicCircleMessageHandler;
 import com.magic.client.MagicCircleClientNetworking;
 import com.magic.client.KeyBindings;
+import com.magic.client.MagicCircleItemEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,8 +23,19 @@ public class MagicModClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("magic-mod-client");
     @Override
     public void onInitializeClient() {
-        // 暂时注释掉僵尸实体渲染注册
-        // EntityRendererRegistry.register(ModEntities.MAGIC_ZOMBIE, ZombieEntityRenderer::new);
+        // 注册魔法僵尸实体渲染器
+        EntityRendererRegistry.register(ModEntities.MAGIC_ZOMBIE, ZombieEntityRenderer::new);
+        
+        // 注册魔法僵尸实体属性
+        net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(
+            ModEntities.MAGIC_ZOMBIE, 
+            com.magic.Entity.MagicZombieEntity.createMobAttributes()
+        );
+        
+        // 注册魔法阵物品实体渲染器（使用自定义渲染器）
+        EntityRendererRegistry.register(ModEntities.MAGIC_CIRCLE_ITEM_ENTITY, 
+            MagicCircleItemEntityRenderer::new
+        );
         
         // 注册法阵渲染事件
         WorldRenderEvents.AFTER_TRANSLUCENT.register(MagicCircleRenderHandler::render);

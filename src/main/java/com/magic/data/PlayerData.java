@@ -1,5 +1,7 @@
 package com.magic.data;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -11,9 +13,34 @@ public class PlayerData {
     
     // 魔法阵相关数据
     public BlockPos magicCirclePos = null;
-    public String magicCircleDimension = null;
+    public String magicCircleDimension = ""; // 使用空字符串代替null，避免CODEC序列化问题
     public boolean magicCircleActive = false;
     public UUID magicCircleItemUuid = null; // 魔法阵物品的UUID，用于识别所有者
+    
+    /**
+     * 创建Codec
+     */
+    public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.BOOL.fieldOf("hasReceivedGuideBook").forGetter(data -> data.hasReceivedGuideBook),
+        BlockPos.CODEC.optionalFieldOf("magicCirclePos").forGetter(data -> Optional.ofNullable(data.magicCirclePos)),
+        Codec.STRING.optionalFieldOf("magicCircleDimension").forGetter(data -> Optional.ofNullable(data.magicCircleDimension)),
+        Codec.BOOL.fieldOf("magicCircleActive").forGetter(data -> data.magicCircleActive),
+        Codec.STRING.optionalFieldOf("magicCircleItemUuid").forGetter(data -> data.magicCircleItemUuid != null ? Optional.of(data.magicCircleItemUuid.toString()) : Optional.empty())
+    ).apply(instance, (hasReceivedGuideBook, magicCirclePos, magicCircleDimension, magicCircleActive, magicCircleItemUuid) -> {
+        PlayerData data = new PlayerData();
+        data.hasReceivedGuideBook = hasReceivedGuideBook;
+        data.magicCirclePos = magicCirclePos.orElse(null);
+        data.magicCircleDimension = magicCircleDimension.orElse(null);
+        data.magicCircleActive = magicCircleActive;
+        if (magicCircleItemUuid.isPresent() && !magicCircleItemUuid.get().isEmpty()) {
+            try {
+                data.magicCircleItemUuid = UUID.fromString(magicCircleItemUuid.get());
+            } catch (IllegalArgumentException e) {
+                data.magicCircleItemUuid = null;
+            }
+        }
+        return data;
+    }));
     
     public void writeNbt(NbtCompound nbt) {
         nbt.putBoolean("hasReceivedGuideBook", hasReceivedGuideBook);
@@ -43,7 +70,7 @@ public class PlayerData {
             int z = nbt.getInt("magicCircleZ").orElse(0);
             magicCirclePos = new BlockPos(x, y, z);
         }
-        magicCircleDimension = nbt.getString("magicCircleDimension").orElse(null);
+        magicCircleDimension = nbt.getString("magicCircleDimension").orElse("");
         magicCircleActive = nbt.getBoolean("magicCircleActive").orElse(false);
         if (nbt.contains("magicCircleItemUuid")) {
             try {
@@ -65,13 +92,13 @@ public class PlayerData {
     // 清除魔法阵
     public void clearMagicCircle() {
         this.magicCirclePos = null;
-        this.magicCircleDimension = null;
+        this.magicCircleDimension = "";
         this.magicCircleActive = false;
         this.magicCircleItemUuid = null;
     }
     
     // 检查是否有激活的魔法阵
     public boolean hasActiveMagicCircle() {
-        return magicCircleActive && magicCirclePos != null && magicCircleDimension != null;
+        return magicCircleActive && magicCirclePos != null && magicCircleDimension != null && !magicCircleDimension.isEmpty();
     }
 } 

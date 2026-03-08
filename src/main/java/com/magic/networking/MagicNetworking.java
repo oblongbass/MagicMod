@@ -6,6 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import com.magic.MagicMod;
+import java.util.UUID;
 
 public class MagicNetworking {
     public static final Identifier MAGIC_CIRCLE_PLACED = Identifier.of("magic-mod", "magic_circle_placed");
@@ -23,12 +24,17 @@ public class MagicNetworking {
         }
     }
     
-    // 向玩家发送魔法阵放置数据包
+    // 向玩家发送魔法阵放置数据包（向后兼容，ownerUuid为null）
     public static void sendMagicCirclePlaced(ServerPlayerEntity player, Vec3d position) {
+        sendMagicCirclePlaced(player, position, null);
+    }
+    
+    // 向玩家发送魔法阵放置数据包（包含所有者UUID）
+    public static void sendMagicCirclePlaced(ServerPlayerEntity player, Vec3d position, UUID ownerUuid) {
         if (player != null && !player.getWorld().isClient()) {
             try {
                 // 创建自定义Payload
-                SimpleMagicPayload payload = new SimpleMagicPayload(MAGIC_CIRCLE_PLACED, position);
+                SimpleMagicPayload payload = new SimpleMagicPayload(MAGIC_CIRCLE_PLACED, position, ownerUuid);
                 
                 // 发送数据包
                 ServerPlayNetworking.send(player, payload);
@@ -39,12 +45,17 @@ public class MagicNetworking {
         }
     }
     
-    // 向玩家发送魔法阵移除数据包
+    // 向玩家发送魔法阵移除数据包（向后兼容，ownerUuid为null）
     public static void sendMagicCircleRemoved(ServerPlayerEntity player) {
+        sendMagicCircleRemoved(player, null);
+    }
+    
+    // 向玩家发送魔法阵移除数据包（包含所有者UUID）
+    public static void sendMagicCircleRemoved(ServerPlayerEntity player, UUID ownerUuid) {
         if (player != null && !player.getWorld().isClient()) {
             try {
                 // 创建自定义Payload（无位置数据）
-                SimpleMagicPayload payload = new SimpleMagicPayload(MAGIC_CIRCLE_REMOVED);
+                SimpleMagicPayload payload = new SimpleMagicPayload(MAGIC_CIRCLE_REMOVED, null, ownerUuid);
                 
                 // 发送数据包
                 ServerPlayNetworking.send(player, payload);

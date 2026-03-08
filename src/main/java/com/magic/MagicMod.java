@@ -73,16 +73,6 @@ public class MagicMod implements ModInitializer {
 		// 注册网络数据包
 		MagicNetworking.initialize();
 
-		// 注册服务器停止事件，保存魔法阵数据
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			try {
-				SimplePlayerDataManager.saveToFile();
-				LOGGER.info("[Magic] 服务器停止，已保存魔法阵数据");
-			} catch (Exception e) {
-				LOGGER.error("[Magic] 保存魔法阵数据失败", e);
-			}
-		});
-
 		LOGGER.info("Magic Mod 初始化成功!");
 	}
 }

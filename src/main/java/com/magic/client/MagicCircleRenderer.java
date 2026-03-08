@@ -117,8 +117,10 @@ public class MagicCircleRenderer {
             data.center = position;
             data.startTime = System.currentTimeMillis(); // 重置开始时间
             data.active = true;
+            com.magic.MagicMod.LOGGER.info("[Magic] 激活魔法阵特效（更新）: 玩家 {}, 位置 {}", playerId, position);
         } else {
             activeCircles.put(playerId, new CircleData(position));
+            com.magic.MagicMod.LOGGER.info("[Magic] 激活魔法阵特效（新建）: 玩家 {}, 位置 {}", playerId, position);
         }
     }
     
