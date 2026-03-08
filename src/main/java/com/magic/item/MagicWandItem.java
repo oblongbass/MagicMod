@@ -5,7 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleEffect;
@@ -21,16 +20,15 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MagicWandItem extends Item {
     // 存储正在进行的粒子效果任务
     private static final Map<UUID, ParticleTask> activeTasks = new HashMap<>();
+    private static final int COOLDOWN_TICKS = 40; // 2秒冷却
 
     public MagicWandItem(Settings settings) {
-        super(settings);
+        super(settings.maxCount(1));
     }
 
     @Override
@@ -50,23 +48,49 @@ public class MagicWandItem extends Item {
         // 创建检测框
         Box box = user.getBoundingBox().stretch(rotation.multiply(maxDistance)).expand(1.0);
 
-        // 检测实体
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityCollision(
-                world, user, start, end, box,
-                entity -> entity instanceof LivingEntity && entity.isAlive() && !entity.isSpectator()
-        );
+        // 修复：使用新的实体检测方法
+        EntityHitResult entityHitResult = findEntityInDirection(world, user, start, end, box);
 
         if (entityHitResult != null) {
             Entity target = entityHitResult.getEntity();
             if (target instanceof LivingEntity) {
                 startParticleEffect((LivingEntity) target, (ServerWorld) world);
                 user.sendMessage(Text.literal("开始对 " + target.getName().getString() + " 施放悬浮魔法!"), true);
+
+                // 添加冷却时间
+                user.getItemCooldownManager().set(stack, COOLDOWN_TICKS);
+
                 return ActionResult.SUCCESS;
             }
         }
 
         user.sendMessage(Text.literal("未找到目标生物!"), true);
         return ActionResult.FAIL;
+    }
+
+    // 修复：手动实现实体检测，避免使用已更改的 ProjectileUtil 方法
+    private EntityHitResult findEntityInDirection(World world, PlayerEntity user, Vec3d start, Vec3d end, Box box) {
+        EntityHitResult result = null;
+        double closestDistance = Double.MAX_VALUE;
+
+        // 获取所有在检测框内的生物实体
+        for (Entity entity : world.getOtherEntities(user, box,
+                e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator())) {
+
+            // 检查视线是否与实体碰撞箱相交
+            Box entityBox = entity.getBoundingBox();
+            Optional<Vec3d> hit = entityBox.raycast(start, end);
+
+            if (hit.isPresent()) {
+                double distance = start.distanceTo(hit.get());
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    result = new EntityHitResult(entity, hit.get());
+                }
+            }
+        }
+
+        return result;
     }
 
     // 开始粒子效果序列
@@ -91,31 +115,6 @@ public class MagicWandItem extends Item {
                 1.0f,
                 1.2f
         );
-    }
-
-    // 施加悬浮效果
-    private void applyLevitationEffect(LivingEntity target) {
-        // 施加悬浮效果（2级，7秒，隐藏所有效果）
-        target.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.LEVITATION,
-                7 * 20,   // 7秒 * 20刻/秒 = 140刻
-                1,         // 等级2（0=等级1，1=等级2）
-                false,     // 不是环境效果
-                false,     // 不显示粒子
-                false      // 不显示图标
-        ));
-
-        // 播放效果音效 - 使用 getWorld() 而不是 world
-        if (target.getWorld() instanceof ServerWorld serverWorld) {
-            serverWorld.playSound(
-                    null,
-                    target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.ENTITY_ILLUSIONER_CAST_SPELL,
-                    SoundCategory.PLAYERS,
-                    1.0f,
-                    0.8f
-            );
-        }
     }
 
     // 在服务器刻事件中更新粒子效果
@@ -233,7 +232,7 @@ public class MagicWandItem extends Item {
             }
         }
 
-        // 应用悬浮效果（从外部类调用）
+        // 施加悬浮效果
         private void applyLevitationEffect(LivingEntity target) {
             // 施加悬浮效果（2级，7秒，隐藏所有效果）
             target.addStatusEffect(new StatusEffectInstance(
@@ -245,7 +244,7 @@ public class MagicWandItem extends Item {
                     false      // 不显示图标
             ));
 
-            // 播放效果音效 - 使用 getWorld() 而不是 world
+            // 播放效果音效
             if (target.getWorld() instanceof ServerWorld serverWorld) {
                 serverWorld.playSound(
                         null,

@@ -1,0 +1,138 @@
+添加屏幕
+屏幕是指的图形用户界面，其类继承了 Screen，允许用户进行交互并实现一些功能。屏幕一个例子是你的模组的配置屏幕。屏幕仅在客户端存在，因此可将相应的类注解为 @Environment(EnvType.CLIENT)。
+
+你可以使用 mixin 以在现有的屏幕中，加入你的屏幕的链接。但是很多情况下，我们可以实现 Mod Menu 模组中的 ModMenuApi，这样就能够在模组菜单屏幕中，通过配置按钮来进入屏幕。本文章不会讲述如何实现 ModMenuApi。
+
+添加部件
+一个屏幕应当有多个“部件”，也就是屏幕中的元素。我们在 init 方法中添加部件。
+
+@Environment(EnvType.CLIENT)
+public class TutorialScreen extends Screen {
+  protected TutorialScreen() {
+    // 此参数为屏幕的标题，进入屏幕中，复述功能会复述。
+    super(Text.literal("我的教程屏幕"));
+  }
+ 
+ 
+  public ButtonWidget button1;
+  public ButtonWidget button2;
+ 
+  @Override
+  protected void init() {
+    button1 = ButtonWidget.builder(Text.literal("按钮 1"), button -> {
+      System.out.println("你点击了按钮 1！");
+    })
+        .dimensions(width / 2 - 205, 20, 200, 20)
+        .tooltip(Tooltip.of(Text.literal("按钮 1 的提示")))
+        .build();
+    button2 = ButtonWidget.builder(Text.literal("按钮 2"), button -> {
+      System.out.println("你点击了按钮 2！");
+    })
+        .dimensions(width / 2 + 5, 20, 200, 20)
+        .tooltip(Tooltip.of(Text.literal("按钮 2 的提示")))
+        .build();
+ 
+    addDrawableChild(button1);
+    addDrawableChild(button2);
+  }
+}
+“init”方法
+init 方法在会以下时候下调用：
+
+屏幕创建时。
+屏幕尺寸调整时。在调用 init 之前，所有已存在的元素都会被移除。
+你可以使用 addDrawable、addSelectableChild、addDrawableChild 来给屏幕添加元素，区别在于：
+
+addDrawable：元素会被渲染，但是你不可以通过鼠标指针或键盘选择它。
+addSelectableChild：你可以选择并与之交互，但它不会被渲染。
+addDrawableChild：元素会被渲染，也可交互，这是最常见的情况。
+在 ButtonWidget.builder(…).builder() 中，你可以用过 size 和 position 指定按钮的大小和位置，也可以直接使用 dimensions。tooltip 指定按钮的提示，这个提示会在鼠标指针移到或者使用 Tab 选择到元素时渲染和复述。其中，Tooltip.of 接收两个参数，第一个用于显示，第二个（可选）用于复述。
+
+在 1.19.3 之前的版本，没有 ButtonWidget.builder(…)，这种情况下你可以直接使用 ButtonWidget 的构造方法。
+
+可以在构造方法中实例化部件吗
+有些用户可能会在构造方法中或类的初始化中实例化部件，例如，代码可能会像这样：
+
+  public ButtonWidget button1 = ButtonWidget.builder(...).build();
+  public ButtonWidget button2 = ButtonWidget.builder(...).build();
+ 
+  @Override
+  protected void init() {
+    addDrawableChild(button1);
+    addDrawableChild(button2);
+  }
+这也是可以了，其优点就是，如果部件有多个“状态”（例如 CyclingWidget 的当前选择，或者在 TextFieldWidget 中已输入的文本），这些状态在重新调整屏幕大小之后，不会被重置。但是，调整尺寸时，屏幕的 width 和 height 会改变，但元素的位置和大小没有改变，因此在这种情况下，你需要在 init 方法中，更新元素的大小和位置。
+
+  @Override
+  protected void init() {
+    button1.setPosition(width / 2 - 205, 20);
+    button2.setPosition(width / 2 + 5, 20);
+ 
+    addDrawableChild(button1);
+    addDrawableChild(button2)
+  }
+注意顺序
+添加大量元素之后，所有这些元素都可以渲染和选择。有些人可能不关心元素添加的顺序，因为所有这些部件都是同时渲染的。但是，如果你可能按 Tab 键来选择元素，你可能发现这些元素的选中的顺序是乱的。因此，请确保元素是以正确的顺序添加的，Tab 键的行为会依赖这一顺序。
+
+上级屏幕
+我通过另一个屏幕（如 Mod Menu 屏幕）访问了这个屏幕，但是我按下 Esc 键返回的时候，直接跳回到了主屏幕，而不是上一级屏幕，为什么？
+
+这是因为你没有指定上一级屏幕，close 方法直接跳回了主屏幕。
+
+添加一个 parent 参数和字段，并在 close 方法中使用它。
+
+  private final Screen parent;
+ 
+  protected TutorialScreen(Screen parent) {
+    super(Text.literal("我的教程屏幕"));
+    this.parent = parent;
+  }
+ 
+  @Override
+  public void close() {
+    client.setScreen(parent);
+  }
+添加复述
+默认情况下，在复述功能启用时，屏幕的标题以及你鼠标悬浮或选中的元素的信息会被复述。如果屏幕需要额外的复述（例如渲染了一些文本但没有添加为部件），你可以覆盖 addScreenNattaions 或 addElementNarrations。这些方法接收一个 NarrationBuilder，在这里你可以使用其 add 方法以添加复述消息。复述的消息分为以下部分（NarrationPart）：
+
+Title：屏幕的标题，会在构造函数中指定。当你进入屏幕时，这个标题会被自动复述。
+Position：告诉你当前正在选中的部件的位置。在原版中，是“屏幕控件，第%s个，共%s个”。此外，如果是在列表中，还会复述以下内容：“已选中列表的第%s行，共%s行”。
+Hint：这个是指的当前选中或悬浮的元素的提示。例如，你可能会记得在上面的代码中创建 ButtonWidget 时有个 tooltip 方法，这个 tooltip 就是在这一部分复述的。
+Usage：在原版中，用法为“使用鼠标指针或Tab键选择屏幕控件”。
+除了对屏幕的复述之外，你还可以自定义元素的复述，也就是覆盖元素的类的 appendNarrations 方法，屏幕复述完成后，就会复述元素。
+
+在添加复述的方法中，使用 narrationBuilder.nextMessage() 可以在当前复述消息之后添加复述，而不是替换复述中的已存在的部分。
+
+在有些类中，你可能需要重复的复述，而不是只复述一次。例如，在加载世界时，加载的百分比会重复复述，告诉用户当前的加载状态。你可以在 render 或 tick 方法中，调用 narrateScreenIfNarrationEnabled。对于更多细节，请参考 LevelLoadingScreen 的源代码。
+
+添加文本
+在 render 方法中，你可以调用像 textRenderer.draw、drawTextWithShadow 或 drawCenteredTextWithShadow 这样的方法，以在屏幕中渲染文本。
+
+  // 对于 1.20 以下版本
+  @Override
+  public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    super.render(matrices, mouseX, mouseY, delta);
+    drawCenteredTextWithShadow(matrices, textRenderer, Text.literal("你必须看到我"), width / 2, height / 2, 0xffffff);
+  }
+ 
+  // 对于 1.20 及以上的版本
+  @Override
+  public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    super.render(context, mouseX, mouseY, delta);
+    context.drawCenteredTextWithShadow(textRenderer, Text.literal("你必须看到我"), width / 2, height / 2, 0xffffff);
+  }
+如果你担心文本太长超出了屏幕的边界。你可以使用 MultilineText 这样文本可以恰当地换行。
+
+    final MultilineText multilineText = MultilineText.create(textRenderer, Text.literal("这个文本很长 ".repeat(20)), width - 20);
+ 
+    // 对于 1.20 以下版本
+    multilineText.drawWithShadow(matrices, 10, height / 2, 16, 0xffffff);
+    // 对于 1.20 及以下的版本
+    multilineText.drawWithShadow(context, 10, height / 2, 16, 0xffffff);
+另一个选择是使用 TextWidget 或 MultilineTextWidget。这些部件默认不会被选中也不会被复述，因为其 active 字段为 false。
+
+滚动
+屏幕不支持滚动，但是你可以添加支持滚动的部件。EntryListWidget 用于包含多个项并支持滚动的部件。不过，一般不是直接继承它，而是继承 AlwaysSelectedEntryListWidget 或 ElementListWidget 更加合适，这些类实现了导航和复述。二者的区别在于：
+
+AlwaysSelectedEntryListWidget 指你可以选择一行的部件，在继承了此类的部件中，你通常会选择列表中的一个项。例如，在原版中的自选世界（单一生物群系）世界选项中的生物建筑系选择列表，以及语言选择列表。
+ElementListWidget 指每行包含多个子元素的部件。在继承了此类的部件中，你可以选择并交到各行中的元素。就行 Screen 一样，ElementListWidget.Entry 应该有零个、一个或多个子元素。

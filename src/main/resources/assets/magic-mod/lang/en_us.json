@@ -1,10 +1,14 @@
 {
   "item.magic-mod.magic_star": "Magic Star",
-  "item.magic-mod.magic_wand": "Magic Wand Levitation",
+  "item.magic-mod.magic_wand_levitation": "Magic Wand - Levitation",
   "item.magic-mod.guide_book": "Magic Mod Guide Book",
-  "item.magic-mod.grow_potion": "Grow Potion",
-  "item.magic-mod.splash_grow_potion": "Splash Grow Potion",
-  "effect.magic-mod.grow": "Grow",
   "itemGroup.magic-mod.group": "Magic Mod",
-  "item.magicmod.magic_wand_levitation.tooltip": "Right-click on a creature to apply levitation effect"
+  "item.magic-mod.magic_wand_levitation.tooltip": "Right-click on a creature to apply levitation effect",
+  "item.magic-mod.crystal_ball": "Crystal Ball",
+  "item.magic-mod.magic_wand_damage": "Damage Magic Wand",
+  "item.magic-mod.magic_circle": "Teleportation Rune Scroll",
+  "item.magic-mod.magic_circle.tooltip": "§r§aRight-click to create the magic circle§r§7, right-click again to cancel",
+
+  "enchantment.magic-mod.charge_power": "Charge Power",
+  "enchantment.magic-mod.damage_power": "Damage Power"
 }
