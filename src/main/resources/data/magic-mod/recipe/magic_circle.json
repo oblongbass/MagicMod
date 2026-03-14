@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "magic-mod:magic_star",
+    "*": "minecraft:redstone",
+    "&": "minecraft:ender_pearl"
+  },
+  "pattern": [
+    "*&*",
+    "*#*",
+    "*&*"
+  ],
+  "result": {
+    "count": 1,
+    "id": "magic-mod:magic_circle"
+  }
+}
