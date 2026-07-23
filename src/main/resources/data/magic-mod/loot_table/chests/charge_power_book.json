@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:enchanted_book",
+          "components": {
+            "minecraft:stored_enchantments": {
+              "magic-mod:charge_power": 1
+            },
+            "minecraft:custom_name": "{\"text\":\"蓄能附魔书\",\"color\":\"gold\",\"italic\":false}"
+          }
+        }
+      ]
+    }
+  ]
+}

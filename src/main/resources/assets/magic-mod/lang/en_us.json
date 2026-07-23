@@ -1,0 +1,23 @@
+{
+  "item.magic-mod.magic_star": "Magic Star",
+  "item.magic-mod.magic_wand_levitation": "Magic Wand - Levitation",
+  "item.magic-mod.guide_book": "Magic Mod Guide Book",
+  "itemGroup.magic-mod.group": "Magic Mod",
+  "item.magic-mod.magic_wand_levitation.tooltip": "Right-click on a creature to apply levitation effect",
+  "item.magic-mod.crystal_ball": "Crystal Ball",
+  "item.magic-mod.magic_wand_damage": "Damage Magic Wand",
+  "item.magic-mod.magic_circle": "Teleportation Rune Scroll",
+  "item.magic-mod.magic_circle.tooltip": "Right-click to create the magic circle, right-click again to cancel",
+  "item.magic-mod.magic_crystal": "Magic Crystal",
+  "item.magic-mod.element_wand": "Element Wand",
+
+  "enchantment.magic-mod.charge_power": "Charge Power",
+  "enchantment.magic-mod.damage_power": "Damage Power",
+
+  "block.magic-mod.magic_circle_block": "Magic Circle Center Block",
+  "block.magic-mod.magic_ore": "Magic Ore",
+
+  "key.magic-mod.teleport_to_magic_circle": "Teleport to Magic Circle",
+  "key.magic-mod.open_magic_screen": "Open Magic Interface",
+  "category.magic-mod.magic": "Magic Mod"
+}

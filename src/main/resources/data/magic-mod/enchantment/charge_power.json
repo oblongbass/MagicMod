@@ -1,0 +1,38 @@
+{
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.magic-mod.charge_power"
+  },
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "magic-mod:charge_power_effect",
+          "charge_reduction": {
+            "type": "minecraft:linear",
+            "base": 0.1,
+            "per_level_above_first": 0.1
+          }
+        },
+        "enchanted": "attacker"
+      }
+    ]
+  },
+  "exclusive_set": "#magic-mod:incompatible_magic",
+  "max_cost": {
+    "base": 15,
+    "per_level_above_first": 10
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 10
+  },
+  "primary_items": "#magic-mod:enchantable/magic_weapon",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#magic-mod:enchantable/magic_weapon",
+  "weight": 10
+}

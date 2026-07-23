@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "magic-mod:charge_power",
+    "magic-mod:damage_power"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "magic-mod:magic_crystal",
+    "G": "minecraft:glass"
+  },
+  "pattern": [
+    " # ",
+    "#G#",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "magic-mod:crystal_ball"
+  }
+}

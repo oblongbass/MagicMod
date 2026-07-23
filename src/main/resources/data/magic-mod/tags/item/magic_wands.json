@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "magic-mod:magic_wand_damage",
+    "magic-mod:element_wand"
+  ]
+}
