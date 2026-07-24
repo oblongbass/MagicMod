@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "magic-mod",
+	"version": "${version}",
+	"name": "magic mod",
+	"description": "Simple!",
+	"authors": [
+		"oblongbass(QT) and playgameswith"
+	],
+	"contact": {
+		"qq Group": "824133572",
+		"sources": "https://github.com/oblongbass/MagicMod",
+		"modrinth": "https://modrinth.com/mod/simple-magic",
+		"bilibili": "https://space.bilibili.com/1707955197?spm_id_from=333.1007.0.0"
+	},
+	"license": "MIT",
+	"icon": "assets/magic-mod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.magic.MagicMod"
+		],
+		"client": [
+			"com.magic.MagicModClient"
+		],
+		"fabric-datagen": [
+			"com.magic.MagicModDataGenerator"
+		]
+	},
+	"mixins": [
+		"magic-mod.mixins.json",
+		"magic-mod.client.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.2",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
