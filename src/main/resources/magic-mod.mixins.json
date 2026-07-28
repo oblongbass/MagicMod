@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "com.magic.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"InGameHudMixin",
+		"RenderTickCounterMixin",
+		"ServerPlayerEntityMixin"
+	],
+	"injectors": {
+		"default_require": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

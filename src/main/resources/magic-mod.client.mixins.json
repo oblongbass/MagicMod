@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.magic.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"ClientPlayerEntityMixin"
+	],
+	"injectors": {
+		"default_require": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
